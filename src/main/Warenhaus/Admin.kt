@@ -1,2 +1,2 @@
-class Admin (benutzer: String, passwort : String, ){
+open class Admin (var benutzer: String, var passwort : String, ){
 }
