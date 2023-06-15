@@ -10,10 +10,15 @@ fun main (){
     warenhaus.elektro.add(Fernseher("TelefunkenTV5274", 799.00, true))
     warenhaus.elektro.add(Lautsprecher("BoseLT21", 1299.00, 500, true, false))
     warenhaus.elektro.add(Lautsprecher("Alexa", 39.99, 15, false, grossgeraet = false))
-    warenhaus.kundeliste.add(Kunde("Max Mustermann", "12545457", 1258745, 250.00))
+    warenhaus.logIn()
+    warenhaus.neuregistrieren()
+    warenhaus.adminlogin()
+    warenhaus.warenKorb
+
     println("${warenhaus.buecher}")
     println("${warenhaus.elektro}")
-    println("${warenhaus.kundeliste}")
+
+
 
 
 }
