@@ -2,5 +2,4 @@
       override fun toString(): String {
           return "$artikelName $preis"
       }
-
-    }
+  }

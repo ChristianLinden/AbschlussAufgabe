@@ -1,2 +1,3 @@
-class Krimi(artikelName : String, preis : Double, var taschenbuch : Boolean, var deutsch: Boolean) :Buch(artikelName,preis){
+class Krimi(artikelName : String, preis : Double, var taschenbuch : Boolean) :Buch(artikelName,preis){
+
 }

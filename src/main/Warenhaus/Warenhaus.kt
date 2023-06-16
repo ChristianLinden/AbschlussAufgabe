@@ -1,12 +1,30 @@
-open class Warenhaus()  {
-
-    var buecher: MutableList<Buch> = mutableListOf()
-    var elektro: MutableList<Elektroartikel> = mutableListOf()
+import java.util.Comparator
+open class Warenhaus() {
+    var buecher: MutableList<Buch> = mutableListOf(
+        Krimi("Der letzte Schrei", 12.99, true),
+        Krimi("Und er schrie immer noch", 15.99, true),
+        Krimi("Das mordende Schaf", 9.99, true),
+        Krimi("Der letzte Überlebende", 29.99, false),
+        Roman("Der Herr der sieben Meere", 29.99, false),
+        Roman("Der Kuchen Streik", 19.99, false),
+        Roman("Käptain Langohr", 6.99, true),
+        Roman("Es war einmal", 9.99, true))
+    var elektro: MutableList<Elektroartikel> = mutableListOf(
+        Fernseher("Telefunken", 599.00, false),
+        Fernseher("Grundig", 999.00, true),
+        Fernseher("Grundig", 599.00, true),
+        Fernseher("Samsung", 1199.00, true),
+        Lautsprecher("Telefunken", 299.00, 250, true, false),
+        Lautsprecher("Bosse", 1599.00, 800, true,true),
+        Lautsprecher("Amazon Alexa", 39.99, 25, false,false),
+        Lautsprecher("Jambra",59.99, 55, true, false))
     var kundenListe: MutableMap<String, String> = mutableMapOf(
-        "Test" to "4711")
-    var aadminListe: MutableMap<String,String> = mutableMapOf(
-        "Test001" to "4715")
-    var warenKorb : MutableList<String> = mutableListOf()
+        "Test" to "4711"
+    )
+    var aadminListe: MutableMap<String, String> = mutableMapOf(
+        "Test001" to "4715"
+    )
+    var warenKorb: MutableList<String> = mutableListOf()
     fun logIn() {
 
         var loggedIn: Boolean = false
@@ -26,6 +44,7 @@ open class Warenhaus()  {
             println("Login fehlgeschlagen.")
 
     }
+
     fun neuregistrieren() {
         var userName: String
         var pin: String
@@ -39,7 +58,8 @@ open class Warenhaus()  {
         kundenListe.put(userName, pin)
         println("Ihr neuer Account mit den Daten $userName und $pin wurde ersstellt")
     }
-    fun adminlogin (){
+
+    fun adminlogin() {
         var loggedIn: Boolean = false
         var adminname: String
         var pin: String
@@ -57,4 +77,5 @@ open class Warenhaus()  {
             println("Login fehlgeschlagen.")
 
     }
-    }
+
+}
