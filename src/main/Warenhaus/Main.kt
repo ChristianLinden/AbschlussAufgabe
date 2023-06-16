@@ -6,4 +6,5 @@ fun main () {
         println("Willkommen im Shop ❤️")
     else
     println("Du bist leider noch zu jung für unsere Angebote. 🐨")
+    warenhaus.einkauf()
 }

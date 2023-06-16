@@ -77,5 +77,10 @@ open class Warenhaus() {
             println("Login fehlgeschlagen.")
 
     }
+    fun einkauf (){
+        for (name in buecher)
+        for (name in elektro)
+            println(name)
+    }
 
 }
