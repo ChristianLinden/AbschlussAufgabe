@@ -14,10 +14,10 @@ open class Warenhaus() {
         Fernseher("Grundig", 999.00, true),
         Fernseher("Grundig", 599.00, true),
         Fernseher("Samsung", 1199.00, true),
-        Lautsprecher("Telefunken", 299.00, 250, true, false),
-        Lautsprecher("Bosse", 1599.00, 800, true,true),
-        Lautsprecher("Amazon Alexa", 39.99, 25, false,false),
-        Lautsprecher("Jambra",59.99, 55, true, false))
+        Lautsprecher("Telefunken", 299.00, 250, true),
+        Lautsprecher("Bosse", 1599.00, 800, true),
+        Lautsprecher("Amazon Alexa", 39.99, 25, false),
+        Lautsprecher("Jambra",59.99, 55, true))
     var kundenListe: MutableMap<String, String> = mutableMapOf(
         "Test" to "4711"
     )
@@ -44,7 +44,6 @@ open class Warenhaus() {
             println("Login fehlgeschlagen.")
 
     }
-
     fun neuregistrieren() {
         var userName: String
         var pin: String
@@ -58,7 +57,6 @@ open class Warenhaus() {
         kundenListe.put(userName, pin)
         println("Ihr neuer Account mit den Daten $userName und $pin wurde ersstellt")
     }
-
     fun adminlogin() {
         var loggedIn: Boolean = false
         var adminname: String
@@ -78,9 +76,12 @@ open class Warenhaus() {
 
     }
     fun einkauf (){
-        for (name in buecher)
-        for (name in elektro)
-            println(name)
-    }
+        println("Wir haben folgende Bücher im Angebot : $buecher")
+        println("Haben Sie Interesse an unseren Angeboten aus dem Elektrobereich? $elektro")
+        println("Bitte geben sie ihren Artikel ein:")
+        var bestellung = readln()
+        println("Vielen Dank, wir haben den Artikel $$bestellung ihren Warenkorb zugefügt.")
+        warenKorb.add(bestellung)
+        println(" Derzeit befinden sich folgende Artikel in ihrem Warenkorb $warenKorb")
 
-}
+}}

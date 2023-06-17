@@ -1,5 +1,5 @@
-open class Elektroartikel ( var artikelName: String, var preis : Double, var grossgeraet : Boolean) {
+open class Elektroartikel ( var artikelName: String, var preis : Double) {
     override fun toString(): String {
-        return "$artikelName  $preis€"
+        return "$artikelName  $preis€ "
     }
 }
