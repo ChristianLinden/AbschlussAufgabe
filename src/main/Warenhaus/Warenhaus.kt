@@ -28,13 +28,7 @@ open class Warenhaus() {
     )
     var warenKorb: MutableList<Produkt> = mutableListOf()
     fun logIn() {
-        println("Dieser Shop ist erst ab dem 12 Lebenjahr zugänglich. Bitte gib dein Alter ein: ")
-        var alter = readln().toInt()
-        if (alter < 12)
-            println("Willkommen im Shop ❤️")
-        else
-            (alter > 12)
-        println("Du bist leider noch zu jung für unsere Angebote. 🐨")
+
         var loggedIn: Boolean = false
         var username: String
         var pin: String
@@ -54,9 +48,20 @@ open class Warenhaus() {
     }
 
     fun neuregistrieren() {
+        println("Dieser Shop ist erst ab dem 12 Lebenjahr zugänglich. Bitte gib dein Alter ein: ")
+        try {
+            var alter = readln().toInt()
+
+            if (alter > 11)
+                println("Willkommen im Shop ❤️")
+            else
+                println("Du bist leider noch zu jung für unsere Angebote. 🐨")
+        } catch (ex: Exception) {
+           neuregistrieren()
+        }
         var userName: String
         var pin: String
-        println("Bitte geben Sie Ihren gewünschten Namen ein:")
+        println("Sie können sich nun Registrieren. Bitte geben Sie Ihren gewünschten Namen ein:")
         userName = readln()
         if (userName in kundenListe)
             println("Dieser Name exestiert berreits, bitte wählen sie einen anderen")
@@ -150,7 +155,7 @@ open class Warenhaus() {
         println("------------------------------------------------")
         println("Gesamtpreis:                        $gesamtpreis")
         println("------------------------------------------------")
-        kunde.bezahlen                                (gesamtpreis)
+        kunde.bezahlen(gesamtpreis)
 
 
     }
@@ -177,6 +182,7 @@ open class Warenhaus() {
                 println("Bitte Registrieren sie sich ${neuregistrieren()}")
                 hauptMenue(Warenhaus)
             }
+
             "0.1" -> {
                 println("Bitte melden sie sich an: ${logIn()} ")
                 hauptMenue(Warenhaus)
@@ -205,21 +211,26 @@ open class Warenhaus() {
                 hauptMenue(Warenhaus)
 
             }
+
             "4.1" -> {
                 println("In Ihrem Warenkorb befinden sich zur Zeit : $warenKorb")
                 hauptMenue(Warenhaus)
             }
+
             "5" -> {
                 println("Vielen Dank für Ihren einkauf ${bezahlen()}")
                 hauptMenue(Warenhaus)
             }
+
             "6" -> {
                 println("Danke für Ihren Besuch : ${hauptMenue(Warenhaus)}")
             }
+
             "7" -> {
                 println("Admin Login ${adminlogin()}")
                 hauptMenue(Warenhaus)
             }
+
             else -> {
                 println("Ungültige Eingabe")
                 hauptMenue(Warenhaus)
