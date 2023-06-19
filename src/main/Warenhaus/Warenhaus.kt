@@ -1,4 +1,5 @@
 import java.util.Comparator
+import kotlin.concurrent.thread
 
 open class Warenhaus() {
     var buecher: MutableList<Buch> = mutableListOf(
@@ -25,7 +26,7 @@ open class Warenhaus() {
     var aadminListe: MutableMap<String, String> = mutableMapOf(
             "Test001" to "4715"
     )
-    var warenKorb: MutableList<String> = mutableListOf()
+    var warenKorb: MutableList<Produkt> = mutableListOf()
     fun logIn() {
         println("Dieser Shop ist erst ab dem 12 Lebenjahr zugänglich. Bitte gib dein Alter ein: ")
         var alter = readln().toInt()
@@ -33,7 +34,7 @@ open class Warenhaus() {
             println("Willkommen im Shop ❤️")
         else
             (alter > 12)
-            println("Du bist leider noch zu jung für unsere Angebote. 🐨")
+        println("Du bist leider noch zu jung für unsere Angebote. 🐨")
         var loggedIn: Boolean = false
         var username: String
         var pin: String
@@ -89,10 +90,141 @@ open class Warenhaus() {
         println("Wir haben folgende Bücher im Angebot : $buecher ")
         println("Bitte geben sie ihren Artikel ein:")
         var bestellung = readln()
-        println("Vielen Dank, wir haben den Artikel $bestellung ihren Warenkorb zugefügt.")
-        warenKorb.add(bestellung)
+        var found = false
+        for (buch in buecher) {
+            if (bestellung == buch.artikelName) {
+                println("Vielen Dank, wir haben den Artikel $bestellung ihren Warenkorb zugefügt.")
+                warenKorb.add(buch)
+                found = true
+                break
+            }
+        }
+        if (!found) {
+            println("Artikel derzeit nicht vorhanden")
+        }
         println(" Derzeit befinden sich folgende Artikel in ihrem Warenkorb $warenKorb")
 
 
     }
+
+    fun einkaufelectro() {
+        println("Wir haben folgende Electroartikel im Angebot : $elektro ")
+        println("Bitte geben sie ihren Artikel ein:")
+        var bestellung = readln()
+        var found = false
+        for (elektroArtikel in elektro) {
+            if (bestellung == elektroArtikel.artikelName) {
+                println("Vielen Dank, wir haben den Artikel $bestellung ihren Warenkorb zugefügt.")
+                warenKorb.add(elektroArtikel)
+                found = true
+                break
+            }
+        }
+        if (!found) {
+            println("Artikel derzeit nicht vorhanden")
+        }
+        println(" Derzeit befinden sich folgende Artikel in ihrem Warenkorb $warenKorb")
+    }
+
+    open fun bezahlen() {
+        var gesamtpreis = 0.0
+        var prämientext = ""
+
+        for (artikel in warenKorb) {
+            gesamtpreis += artikel.preis
+        }
+        if (gesamtpreis < 50.0) {
+            prämientext = "Sie erhalten noch keine Prämie"
+        } else if (gesamtpreis < 100.0) {
+            prämientext = "Sie erhalten einen 5€ Amazon-Gutschein für ihren nächsten Einkauf"
+        } else if (gesamtpreis < 150.0) {
+            prämientext = "Sie erhalten einen 15€ Amazon-Gutschein für ihren nächsten Einkauf"
+        } else if (gesamtpreis < 200.0) {
+            prämientext = "Sie erhalten einen 25€ Amazon-Gutschein für ihren nächsten Einkauf"
+        } else {
+            prämientext = "Sie erhalten einen 50$ Gutschein für ihren nächsten Einkauf"
+        }
+        println("------------------------------------------------")
+        println(prämientext)
+        val kunde = Kunde("Max Mustermann", 2500.0)
+        println("------------------------------------------------")
+        println("Gesamtpreis:                        $gesamtpreis")
+        println("------------------------------------------------")
+        kunde.bezahlen                                (gesamtpreis)
+
+
+    }
+
+    fun hauptMenue(Warenhaus: String) {
+        val kunde = Kunde("", 0.00)
+        println("""
+        Was möchten sie tun?
+        [0]     Registrieren
+        [0.1]   Login
+        [1]     Guthaben abfragen
+        [2]     Geld einzahlen(Guthaben)
+        [3]     Bücher kaufen
+        [4]     Elektroartikel kaufen
+        [4.1]   Einkaufswagen einsehen
+        [5]     Bezahlen
+        [6]     Admin Login
+    """.trimIndent())
+
+        var input: String = readln()
+
+        when (input) {
+            "0" -> {
+                println("Bitte Registrieren sie sich ${neuregistrieren()}")
+                hauptMenue(Warenhaus)
+            }
+            "0.1" -> {
+                println("Bitte melden sie sich an: ${logIn()} ")
+                hauptMenue(Warenhaus)
+            }
+
+            "1" -> {
+                println("Ihr aktuelles Guthaben beträgt: ${kunde.guthaben}")
+                hauptMenue(Warenhaus)
+            }
+
+            "2" -> {
+                println("Welchen Betrag möchten Sie auf Ihr Einkaufskonto einzahlen: ")
+                var einzahlung = readln().toDouble()
+                kunde.guthaben = einzahlung + kunde.guthaben
+                println("Ihr neues Guthaben beträgt: ${kunde.guthaben}€")
+                hauptMenue(Warenhaus)
+            }
+
+            "3" -> {
+                println("Viel Spass bei ihrem Einkauf: ${einkaufbuecher()}")
+                hauptMenue(Warenhaus)
+            }
+
+            "4" -> {
+                println("Viel Spass bei ihrem Einkauf: ${einkaufelectro()}")
+                hauptMenue(Warenhaus)
+
+            }
+            "4.1" -> {
+                println("In Ihrem Warenkorb befinden sich zur Zeit : $warenKorb")
+                hauptMenue(Warenhaus)
+            }
+            "5" -> {
+                println("Vielen Dank für Ihren einkauf ${bezahlen()}")
+                hauptMenue(Warenhaus)
+            }
+            "6" -> {
+                println("Danke für Ihren Besuch : ${hauptMenue(Warenhaus)}")
+            }
+            "7" -> {
+                println("Admin Login ${adminlogin()}")
+                hauptMenue(Warenhaus)
+            }
+            else -> {
+                println("Ungültige Eingabe")
+                hauptMenue(Warenhaus)
+            }
+        }
+    }
 }
+

@@ -4,6 +4,6 @@ import kotlin.math.exp
 fun main() {
 
     val warenhaus = Warenhaus()
-   warenhaus.logIn()
+    warenhaus.hauptMenue(Warenhaus = "")
 
 }
