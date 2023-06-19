@@ -3,7 +3,7 @@
 fun main (){
     val warenhaus = Warenhaus()
 
-    warenhaus.einkauf()
+    warenhaus.einkaufbuecher()
 
 
 
