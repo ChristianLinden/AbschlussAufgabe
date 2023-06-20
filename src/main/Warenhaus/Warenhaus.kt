@@ -1,3 +1,5 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Comparator
 import kotlin.concurrent.thread
 
@@ -13,8 +15,8 @@ open class Warenhaus() {
             Roman("Es war einmal", 9.99, true))
     var elektro: MutableList<Elektroartikel> = mutableListOf(
             Fernseher("Telefunken", 599.00, false),
-            Fernseher("Grundig", 999.00, true),
-            Fernseher("Grundig", 599.00, true),
+            Fernseher("Grundig TV 5310", 999.00, true),
+            Fernseher("Grundig TV 7250", 599.00, true),
             Fernseher("Samsung", 1199.00, true),
             Lautsprecher("Telefunken", 299.00, 250, true),
             Lautsprecher("Bosse", 1599.00, 800, true),
@@ -48,7 +50,7 @@ open class Warenhaus() {
     }
 
     fun neuregistrieren() {
-        println("Dieser Shop ist erst ab dem 12 Lebenjahr zugänglich. Bitte gib dein Alter ein: ")
+        println("Dieser Shop ist erst ab dem 12 Lebensjahr zugänglich. Bitte gib dein Alter ein: ")
         try {
             var alter = readln().toInt()
 
@@ -57,14 +59,14 @@ open class Warenhaus() {
             else
                 println("Du bist leider noch zu jung für unsere Angebote. 🐨")
         } catch (ex: Exception) {
-           neuregistrieren()
+            neuregistrieren()
         }
         var userName: String
         var pin: String
         println("Sie können sich nun Registrieren. Bitte geben Sie Ihren gewünschten Namen ein:")
         userName = readln()
         if (userName in kundenListe)
-            println("Dieser Name exestiert berreits, bitte wählen sie einen anderen")
+            println("Dieser Name existiert bereits, bitte wählen sie einen anderen")
         else
             println("bitte geben sie Ihren gewünschten Pin ein")
         pin = readln()
@@ -92,8 +94,10 @@ open class Warenhaus() {
     }
 
     fun einkaufbuecher() {
-        println("Wir haben folgende Bücher im Angebot : $buecher ")
-        println("Bitte geben sie ihren Artikel ein:")
+        for ((artikel, preis)in buecher.withIndex()){
+            println("$artikel $preis")
+        }
+        println("Bitte geben sie ihren Artikel ein(mit der Artikelbezeichnung):")
         var bestellung = readln()
         var found = false
         for (buch in buecher) {
@@ -132,8 +136,13 @@ open class Warenhaus() {
     }
 
     open fun bezahlen() {
+
         var gesamtpreis = 0.0
         var prämientext = ""
+        val now = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
+        val formattedDateTime = now.format(formatter)
+
 
         for (artikel in warenKorb) {
             gesamtpreis += artikel.preis
@@ -149,45 +158,69 @@ open class Warenhaus() {
         } else {
             prämientext = "Sie erhalten einen 50$ Gutschein für ihren nächsten Einkauf"
         }
-        println("------------------------------------------------")
+        println("-------------------------------------------------------")
         println(prämientext)
-        val kunde = Kunde("Max Mustermann", 2500.0)
-        println("------------------------------------------------")
+        val kunde = Kunde("")
+        println("-------------------------------------------------------")
         println("Gesamtpreis:                        $gesamtpreis")
-        println("------------------------------------------------")
+        println("-------------------------------------------------------")
+        println("Vielen Dank für Ihren Einkauf")
+        println("$formattedDateTime")
         kunde.bezahlen(gesamtpreis)
+        warenKorb.clear()
 
+    }
+
+    fun paypalBezahlen() {
+        var gesamtpreis = 0.0
+        var prämientext = "."
+        val now = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
+        val formattedDateTime = now.format(formatter)
+
+
+        for (artikel in warenKorb) {
+            gesamtpreis += artikel.preis
+        }
+        if (gesamtpreis < 50.0) {
+            prämientext = "Sie erhalten noch keine Prämie"
+        } else if (gesamtpreis < 100.0) {
+            prämientext = "Sie erhalten einen 5€ Amazon-Gutschein für ihren nächsten Einkauf"
+        } else if (gesamtpreis < 150.0) {
+            prämientext = "Sie erhalten einen 15€ Amazon-Gutschein für ihren nächsten Einkauf"
+        } else if (gesamtpreis < 200.0) {
+            prämientext = "Sie erhalten einen 25€ Amazon-Gutschein für ihren nächsten Einkauf"
+        } else {
+            prämientext = "Sie erhalten einen 50$ Gutschein für ihren nächsten Einkauf"
+        }
+        println("-------------------------------------------------------")
+        println(prämientext)
+        val kunde = Kunde("")
+        println("-------------------------------------------------------")
+        println("Gesamtpreis:                        $gesamtpreis")
+        println("-------------------------------------------------------")
+        println("$formattedDateTime")
+        kunde.bezahlen(gesamtpreis)
+        warenKorb.clear()
 
     }
 
     fun hauptMenue(Warenhaus: String) {
-        val kunde = Kunde("", 0.00)
+        val kunde = Kunde("")
         println("""
-        Was möchten sie tun?
-        [0]     Registrieren
-        [0.1]   Login
+        Was möchten sie tun:
         [1]     Guthaben abfragen
         [2]     Geld einzahlen(Guthaben)
         [3]     Bücher kaufen
         [4]     Elektroartikel kaufen
-        [4.1]   Einkaufswagen einsehen
-        [5]     Bezahlen
-        [6]     Admin Login
+        [5]     Warenkorb
+        [6]     Wie möchten Sie zahlen  
+        [7]     LogOut      
     """.trimIndent())
 
         var input: String = readln()
 
         when (input) {
-            "0" -> {
-                println("Bitte Registrieren sie sich ${neuregistrieren()}")
-                hauptMenue(Warenhaus)
-            }
-
-            "0.1" -> {
-                println("Bitte melden sie sich an: ${logIn()} ")
-                hauptMenue(Warenhaus)
-            }
-
             "1" -> {
                 println("Ihr aktuelles Guthaben beträgt: ${kunde.guthaben}")
                 hauptMenue(Warenhaus)
@@ -202,40 +235,90 @@ open class Warenhaus() {
             }
 
             "3" -> {
-                println("Viel Spass bei ihrem Einkauf: ${einkaufbuecher()}")
+                println(" ${einkaufbuecher()}")
                 hauptMenue(Warenhaus)
             }
 
             "4" -> {
-                println("Viel Spass bei ihrem Einkauf: ${einkaufelectro()}")
+                println(" ${einkaufelectro()}")
                 hauptMenue(Warenhaus)
 
             }
 
-            "4.1" -> {
+            "5" -> {
                 println("In Ihrem Warenkorb befinden sich zur Zeit : $warenKorb")
                 hauptMenue(Warenhaus)
             }
 
-            "5" -> {
-                println("Vielen Dank für Ihren einkauf ${bezahlen()}")
-                hauptMenue(Warenhaus)
-            }
-
             "6" -> {
-                println("Danke für Ihren Besuch : ${hauptMenue(Warenhaus)}")
+                println(" ${bezahlenAuswahl(Warenhaus)}")
+                hauptMenue(Warenhaus)
             }
 
             "7" -> {
-                println("Admin Login ${adminlogin()}")
-                hauptMenue(Warenhaus)
+                println("Danke für Ihren Besuch, SSie sind erfolgreich abgemeldet : ${hauptMenue(Warenhaus)}")
             }
 
             else -> {
                 println("Ungültige Eingabe")
                 hauptMenue(Warenhaus)
+            }}}
+
+
+    fun loginMenu(Warenhaus: String) {
+        println("""
+        Herzlich Willkommen im Phantasie Store
+        Was möchten sie tun?
+        [0]     Registrieren
+        [1]     Login
+        [2]     Admin Login
+    """.trimIndent())
+        var input: String = readln()
+
+        when (input) {
+
+            "0" -> {
+                println("Danke für Ihre Neuanmeldung ${neuregistrieren()}")
+                hauptMenue(Warenhaus)
+            }
+
+            "1" -> {
+                logIn()
+                hauptMenue(Warenhaus)
+            }
+
+            "2" -> {
+                println("Hallo Admin ${adminlogin()}")
+                hauptMenue(Warenhaus)
             }
         }
     }
-}
+    fun bezahlenAuswahl(Warenhaus: String) {
+    println("""
+        Wie möchten Sie zahlen
+        [0]     Mit Einkaufsguthaben
+        [1]     Paypal
+        
+    """.trimIndent())
+    var input: String = readln()
+
+    when (input) {
+
+        "0" -> {
+            bezahlen()
+        }
+
+        "1" -> {
+            paypalBezahlen()
+        }
+    }
+}  }
+
+
+
+
+
+
+
+
 
