@@ -97,7 +97,7 @@ open class Warenhaus() {
         for ((artikel, preis)in buecher.withIndex()){
             println("$artikel $preis")
         }
-        println("Bitte geben sie ihren Artikel ein(mit der Artikelbezeichnung):")
+        println("Bitte geben sie ihren Artikel ein (Nur die Artikelbezeichnung) :")
         var bestellung = readln()
         var found = false
         for (buch in buecher) {
@@ -117,8 +117,10 @@ open class Warenhaus() {
     }
 
     fun einkaufelectro() {
-        println("Wir haben folgende Electroartikel im Angebot : $elektro ")
-        println("Bitte geben sie ihren Artikel ein:")
+        for ((artikel, preis)in elektro.withIndex()){
+            println("$artikel $preis")
+        }
+        println("Bitte geben sie ihren Artikel ein(Bitte nur mit der Artikelbezeichnung):")
         var bestellung = readln()
         var found = false
         for (elektroArtikel in elektro) {
@@ -256,7 +258,7 @@ open class Warenhaus() {
             }
 
             "7" -> {
-                println("Danke für Ihren Besuch, SSie sind erfolgreich abgemeldet : ${hauptMenue(Warenhaus)}")
+                println("Danke für Ihren Besuch, SSie sind erfolgreich abgemeldet : ${loginMenu(Warenhaus)}")
             }
 
             else -> {
