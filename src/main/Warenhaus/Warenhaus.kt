@@ -22,6 +22,7 @@ open class Warenhaus() {
             Lautsprecher("Bosse", 1599.00, 800, true),
             Lautsprecher("Amazon Alexa", 39.99, 25, false),
             Lautsprecher("Jambra", 59.99, 55, true))
+    val bewertungen : MutableList<WarenhausBewertung> = mutableListOf()
     var kundenListe: MutableMap<String, String> = mutableMapOf(
             "Test" to "4711"
     )
@@ -29,6 +30,7 @@ open class Warenhaus() {
             "Test001" to "4715"
     )
     var warenKorb: MutableList<Produkt> = mutableListOf()
+    val bewertungssytem = Bewertungssytem()
     fun logIn() {
 
         var loggedIn: Boolean = false
@@ -251,7 +253,6 @@ open class Warenhaus() {
                 println("In Ihrem Warenkorb befinden sich zur Zeit : $warenKorb")
                 hauptMenue(Warenhaus)
             }
-
             "6" -> {
                 println(" ${bezahlenAuswahl(Warenhaus)}")
                 hauptMenue(Warenhaus)
@@ -314,7 +315,22 @@ open class Warenhaus() {
             paypalBezahlen()
         }
     }
-}  }
+}
+    fun bewertungAbgeben (bewertung : Int, kritik : String?){
+    val neueBewertung = WarenhausBewertung(bewertung,kritik)
+    bewertungen.add(neueBewertung)
+    println("Vielen Dank für Ihre Bewertung")
+}
+    fun durchschnittlicheBewertun () : Double{
+        if (bewertungen.isEmpty()){
+            return 0.0
+        }
+        val summe = bewertungen.sumOf { it.bewertng }
+        return summe.toDouble() / bewertungen.size.toDouble()
+    }
+
+
+}
 
 
 
