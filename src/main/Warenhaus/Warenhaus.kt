@@ -2,35 +2,43 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Comparator
 import kotlin.concurrent.thread
+import kotlin.math.E
 
 open class Warenhaus() {
     var buecher: MutableList<Buch> = mutableListOf(
-            Krimi("Der letzte Schrei", 12.99, true),
-            Krimi("Und er schrie immer noch", 15.99, true),
-            Krimi("Das mordende Schaf", 9.99, true),
-            Krimi("Der letzte Überlebende", 29.99, false),
-            Roman("Der Herr der sieben Meere", 29.99, false),
-            Roman("Der Kuchen Streik", 19.99, false),
-            Roman("Käptain Langohr", 6.99, true),
-            Roman("Es war einmal", 9.99, true))
+            Krimi("Der letzte Schrei", 12.99, 2, true),
+            Krimi("Und er schrie immer noch", 15.99, 3, true),
+            Krimi("Das mordende Schaf", 9.99, 2, true),
+            Krimi("Der letzte Überlebende", 29.99, 3, false),
+            Roman("Der Herr der sieben Meere", 29.99, 1, false),
+            Roman("Der Kuchen Streik", 19.99, 3, false),
+            Roman("Käptain Langohr", 6.99, 3, true),
+            Roman("Es war einmal", 9.99, 2, true))
     var elektro: MutableList<Elektroartikel> = mutableListOf(
-            Fernseher("Telefunken", 599.00, false),
-            Fernseher("Grundig TV 5310", 999.00, true),
-            Fernseher("Grundig TV 7250", 599.00, true),
-            Fernseher("Samsung", 1199.00, true),
-            Lautsprecher("Telefunken", 299.00, 250, true),
-            Lautsprecher("Bosse", 1599.00, 800, true),
-            Lautsprecher("Amazon Alexa", 39.99, 25, false),
-            Lautsprecher("Jambra", 59.99, 55, true))
-    val bewertungen : MutableList<WarenhausBewertung> = mutableListOf()
+            Fernseher("Telefunken", 599.00, false, 3, ),
+            Fernseher("Grundig TV 5310", 999.00, true, 2),
+            Fernseher("Grundig TV 7250", 599.00, true, 1),
+            Fernseher("Samsung", 1199.00, true, 2),
+            Lautsprecher("Telefunken", 299.00, 250, true, 2),
+            Lautsprecher("Bosse", 1599.00, 800, true, 2),
+            Lautsprecher("Amazon Alexa", 39.99, 25, false, 1),
+            Lautsprecher("Jambra", 59.99, 55, true, 1))
+    val bewertungen: MutableList<WarenhausBewertung> = mutableListOf(
+            WarenhausBewertung(5, "alles super, gerne wieder"),
+            WarenhausBewertung(3, "Personal könnte was schneller sein"),
+            WarenhausBewertung(5, "schnelle Lieferung"),
+            WarenhausBewertung(2, "Artikel(TV) gekauft und prompt geliefert und aufgestellt")
+
+    )
+
     var kundenListe: MutableMap<String, String> = mutableMapOf(
             "Test" to "4711"
     )
-    var aadminListe: MutableMap<String, String> = mutableMapOf(
+    var adminListe: MutableMap<String, String> = mutableMapOf(
             "Test001" to "4715"
     )
     var warenKorb: MutableList<Produkt> = mutableListOf()
-    val bewertungssytem = Bewertungssytem()
+
     fun logIn() {
 
         var loggedIn: Boolean = false
@@ -87,7 +95,7 @@ open class Warenhaus() {
         println("Geben sie ihre Pin ein:")
         pin = readln()
 
-        loggedIn = adminname in aadminListe && pin == aadminListe[adminname]!!
+        loggedIn = adminname in adminListe && pin == adminListe[adminname]!!
         if (loggedIn)
             println("Willkommen, $adminname")
         else
@@ -96,8 +104,8 @@ open class Warenhaus() {
     }
 
     fun einkaufbuecher() {
-        for ((artikel, preis)in buecher.withIndex()){
-            println("$artikel $preis")
+        for ((artikel, preis) in buecher.withIndex()) {
+            println("$artikel $preis")//Liste aller Artikel in buecher
         }
         println("Bitte geben sie ihren Artikel ein (Nur die Artikelbezeichnung) :")
         var bestellung = readln()
@@ -119,8 +127,9 @@ open class Warenhaus() {
     }
 
     fun einkaufelectro() {
-        for ((artikel, preis)in elektro.withIndex()){
-            println("$artikel $preis")
+        elektro.sort()
+        for ((artikel, preis) in elektro.withIndex()) {
+            println("$artikel $preis")//übersicht wird ausgegeben
         }
         println("Bitte geben sie ihren Artikel ein(Bitte nur mit der Artikelbezeichnung):")
         var bestellung = readln()
@@ -138,6 +147,7 @@ open class Warenhaus() {
         }
         println(" Derzeit befinden sich folgende Artikel in ihrem Warenkorb $warenKorb")
     }
+
 
     open fun bezahlen() {
 
@@ -178,7 +188,7 @@ open class Warenhaus() {
     fun paypalBezahlen() {
         var gesamtpreis = 0.0
         var prämientext = "."
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now()//gegoogelt b.z.w Chatgpd zu Hilfe genommen beim Datum
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
         val formattedDateTime = now.format(formatter)
 
@@ -218,8 +228,9 @@ open class Warenhaus() {
         [3]     Bücher kaufen
         [4]     Elektroartikel kaufen
         [5]     Warenkorb
-        [6]     Wie möchten Sie zahlen  
-        [7]     LogOut      
+        [6]     Bewertung Sie Uns
+        [7]     Wie möchten Sie zahlen  
+        [8]     LogOut      
     """.trimIndent())
 
         var input: String = readln()
@@ -239,12 +250,12 @@ open class Warenhaus() {
             }
 
             "3" -> {
-                println(" ${einkaufbuecher()}")
+                einkaufbuecher()
                 hauptMenue(Warenhaus)
             }
 
             "4" -> {
-                println(" ${einkaufelectro()}")
+                einkaufelectro()
                 hauptMenue(Warenhaus)
 
             }
@@ -253,20 +264,28 @@ open class Warenhaus() {
                 println("In Ihrem Warenkorb befinden sich zur Zeit : $warenKorb")
                 hauptMenue(Warenhaus)
             }
+
             "6" -> {
-                println(" ${bezahlenAuswahl(Warenhaus)}")
+                bewertungAbgeben()
                 hauptMenue(Warenhaus)
             }
 
             "7" -> {
-                println("Danke für Ihren Besuch, SSie sind erfolgreich abgemeldet : ${loginMenu(Warenhaus)}")
+                bezahlenAuswahl(Warenhaus)
+                hauptMenue(Warenhaus)
+            }
+
+            "8" -> {
+                println("Danke für Ihren Besuch, Sie sind erfolgreich abgemeldet ")
+                loginMenu(Warenhaus)
             }
 
             else -> {
                 println("Ungültige Eingabe")
                 hauptMenue(Warenhaus)
-            }}}
-
+            }
+        }
+    }
 
     fun loginMenu(Warenhaus: String) {
         println("""
@@ -291,46 +310,126 @@ open class Warenhaus() {
             }
 
             "2" -> {
-                println("Hallo Admin ${adminlogin()}")
-                hauptMenue(Warenhaus)
+                adminlogin()
+                adminMenue(Warenhaus)
             }
         }
     }
+
+    fun adminMenue(Warenhaus: String) {
+        println("""
+        Was möchten sie tun?
+        [0]     Bestand abfragen
+        [1]     Bücher nachbestellen 
+        [2]     Elektroartikel nachbestellen
+        [3]     Logout
+    """.trimIndent())
+        var input: String = readln()
+
+        when (input) {
+
+            "0" -> {
+                bestandsabfrage()
+                adminMenue(Warenhaus)
+            }
+
+            "1" -> {
+                automBestellenbuecher(2, 5)
+                adminMenue(Warenhaus)
+            }
+
+            "2" -> {
+                automBestellenelectro(2, 5)
+                adminMenue(Warenhaus)
+            }
+
+            "3" -> {
+                println("Danke für Ihren Besuch, Sie sind erfolgreich abgemeldet ")
+                loginMenu(Warenhaus)
+            }
+        }
+    }
+
     fun bezahlenAuswahl(Warenhaus: String) {
-    println("""
+        println("""
         Wie möchten Sie zahlen
         [0]     Mit Einkaufsguthaben
         [1]     Paypal
         
     """.trimIndent())
-    var input: String = readln()
+        var input: String = readln()
 
-    when (input) {
+        when (input) {
 
-        "0" -> {
-            bezahlen()
-        }
+            "0" -> {
+                bezahlen()
+            }
 
-        "1" -> {
-            paypalBezahlen()
+            "1" -> {
+                paypalBezahlen()
+            }
         }
     }
-}
-    fun bewertungAbgeben (bewertung : Int, kritik : String?){
-    val neueBewertung = WarenhausBewertung(bewertung,kritik)
-    bewertungen.add(neueBewertung)
-    println("Vielen Dank für Ihre Bewertung")
-}
-    fun durchschnittlicheBewertun () : Double{
-        if (bewertungen.isEmpty()){
+
+    fun bewertungAbgeben() {
+        println("Bitte geben Sie Ihre Bewertung ((1 für schlecht - 5 für gut) für unsere Service und gesamt Bild  ein")
+        try {
+            val bewertung = readln().toInt()//eingabe der Bewertung von 1 - 5
+            println("Bitte teilen Sie uns optional Ihre Kritik mit")
+            val kritik = readln()//eingabe der Kritik
+            val neueBewertung = WarenhausBewertung(bewertung, kritik)
+            bewertungen.add(neueBewertung)//wird der Liste hinzugefügt
+            println("Vielen Dank für Ihre Bewertung")
+        } catch (ex: Exception) {
+            (bewertungAbgeben())
+        }
+
+    }
+
+    fun durchschnittlicheBewertung(): Double {
+
+        if (bewertungen.isEmpty()) {
             return 0.0
         }
-        val summe = bewertungen.sumOf { it.bewertng }
-        return summe.toDouble() / bewertungen.size.toDouble()
+
+        val summe = bewertungen.sumOf { it.bewertng }//Hier wird die Summe aller Bewertungen ausgerechnet
+        return summe.toDouble() / bewertungen.size.toDouble()//hier dann durch die Anzahl der Beweretungen geteilt
+        val durchnittlicheBewertung = durchschnittlicheBewertung()
+        println("Wir wurden im Durchschnitt wie folgt bewertet $durchnittlicheBewertung")
     }
 
+    fun bestandsabfrage() {
+        println("Bestände:")
+        println("Bücher:")
+        for (buch in buecher) {
+            println("${buch.artikelName}: ${buch.bestand}")
+        }
+        println("Bestände:")
+        println("Elektroartikel:")
+        for (artikel in elektro) {
+            println("${artikel.artikelName}: ${artikel.bestand}")
+        }
+    }
+
+    fun automBestellenbuecher(minBestand: Int, nachbestellterBestand: Int) {
+        val artikelZumNachbestellen = buecher.filter { it.bestand <= minBestand }//durchsucht Bücher, löst Bestellung aus
+        for (artikel in artikelZumNachbestellen) {
+            artikel.bestand += nachbestellterBestand//fügt jedem Artikel den Bestellten hinzu
+            println("$artikel wurde nachbestellt ")
+        }
+    }
+
+    fun automBestellenelectro(minBestand: Int, nachbestellterBestand: Int) {
+        val artikelZumNachbestellen = elektro.filter { it.bestand <= minBestand }
+        for (artikel in artikelZumNachbestellen) {
+            artikel.bestand += nachbestellterBestand
+            println("$artikel wurde nachbestellt ")
+        }
+    }
 
 }
+
+
 
 
 

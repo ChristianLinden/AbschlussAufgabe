@@ -1,4 +1,4 @@
-class Fernseher(artikelName : String, preis: Double, var hd : Boolean, ) : Elektroartikel(artikelName, preis,) {
+class Fernseher(artikelName : String, preis: Double, var hd : Boolean,bestand : Int ) : Elektroartikel(artikelName, preis,bestand) {
 
 
 }
