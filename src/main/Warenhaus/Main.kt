@@ -7,5 +7,5 @@ fun main() {
     warenhaus.durchschnittlicheBewertung()
     println("So wurden wir bisher im Durchschnitt bewertet $durchschnittlicheBewertung ")
     println("Bitte geben Sie uns doch auch eine Bewertung , sobald Sie eingeloggt b.z.w angemeldet sind")
-    warenhaus.loginMenu(Warenhaus = "")
+    warenhaus.loginMenu()
 }

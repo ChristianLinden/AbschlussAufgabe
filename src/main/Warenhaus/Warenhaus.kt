@@ -15,12 +15,12 @@ open class Warenhaus() {
             Roman("Käptain Langohr", 6.99, 3, true),
             Roman("Es war einmal", 9.99, 2, true))
     var elektro: MutableList<Elektroartikel> = mutableListOf(
-            Fernseher("Telefunken", 599.00, false, 3, ),
+            Fernseher("Telefunken", 599.00, false, 3),
             Fernseher("Grundig TV 5310", 999.00, true, 2),
             Fernseher("Grundig TV 7250", 599.00, true, 1),
             Fernseher("Samsung", 1199.00, true, 2),
             Lautsprecher("Telefunken", 299.00, 250, true, 2),
-            Lautsprecher("Bosse", 1599.00, 800, true, 2),
+            Lautsprecher("Bose", 1599.00, 800, true, 2),
             Lautsprecher("Amazon Alexa", 39.99, 25, false, 1),
             Lautsprecher("Jambra", 59.99, 55, true, 1))
     val bewertungen: MutableList<WarenhausBewertung> = mutableListOf(
@@ -31,14 +31,14 @@ open class Warenhaus() {
 
     )
 
-    var kundenListe: MutableMap<String, String> = mutableMapOf(
-            "Test" to "4711"
+    var kundenListeneu = mutableListOf(
+            Kunde("Test", "4711")
     )
     var adminListe: MutableMap<String, String> = mutableMapOf(
             "Test001" to "4715"
     )
     var warenKorb: MutableList<Produkt> = mutableListOf()
-
+    var angemKunde: Kunde? = null
     fun logIn() {
 
         var loggedIn: Boolean = false
@@ -51,12 +51,16 @@ open class Warenhaus() {
         println("Geben sie ihre Pin ein:")
         pin = readln()
 
-        loggedIn = username in kundenListe && pin == kundenListe[username]!!
-        if (loggedIn)
-            println("Willkommen, $username")
-        else
-            println("Login fehlgeschlagen.")
+        loggedIn = kundenListeneu.filter { it.name == username && it.pin == pin }.size > 0
+        if (loggedIn) {
+            angemKunde = kundenListeneu.first { it.name == username && it.pin == pin }
 
+            println("Willkommen, $username")
+        } else {
+            println("Login fehlgeschlagen.")
+            logIn()
+            return
+        }
     }
 
     fun neuregistrieren() {
@@ -66,21 +70,26 @@ open class Warenhaus() {
 
             if (alter > 11)
                 println("Willkommen im Shop ❤️")
-            else
+            else {
                 println("Du bist leider noch zu jung für unsere Angebote. 🐨")
+                loginMenu()
+            }
         } catch (ex: Exception) {
             neuregistrieren()
+            return
         }
         var userName: String
         var pin: String
         println("Sie können sich nun Registrieren. Bitte geben Sie Ihren gewünschten Namen ein:")
         userName = readln()
-        if (userName in kundenListe)
+        if (kundenListeneu.filter { it.name == userName }.size > 0)//size fragt ab ob Liste leer
             println("Dieser Name existiert bereits, bitte wählen sie einen anderen")
         else
             println("bitte geben sie Ihren gewünschten Pin ein")
         pin = readln()
-        kundenListe.put(userName, pin)
+        val kunde = Kunde(userName, pin)
+        kundenListeneu.add(kunde)
+        angemKunde = kunde
         println("Ihr neuer Account mit den Daten $userName und $pin wurde ersstellt")
     }
 
@@ -104,6 +113,7 @@ open class Warenhaus() {
     }
 
     fun einkaufbuecher() {
+        buecher.sort()
         for ((artikel, preis) in buecher.withIndex()) {
             println("$artikel $preis")//Liste aller Artikel in buecher
         }
@@ -158,6 +168,7 @@ open class Warenhaus() {
         val formattedDateTime = now.format(formatter)
 
 
+
         for (artikel in warenKorb) {
             gesamtpreis += artikel.preis
         }
@@ -174,13 +185,12 @@ open class Warenhaus() {
         }
         println("-------------------------------------------------------")
         println(prämientext)
-        val kunde = Kunde("")
         println("-------------------------------------------------------")
         println("Gesamtpreis:                        $gesamtpreis")
         println("-------------------------------------------------------")
         println("Vielen Dank für Ihren Einkauf")
         println("$formattedDateTime")
-        kunde.bezahlen(gesamtpreis)
+        angemKunde!!.bezahlen(gesamtpreis)
         warenKorb.clear()
 
     }
@@ -209,18 +219,16 @@ open class Warenhaus() {
         }
         println("-------------------------------------------------------")
         println(prämientext)
-        val kunde = Kunde("")
         println("-------------------------------------------------------")
         println("Gesamtpreis:                        $gesamtpreis")
         println("-------------------------------------------------------")
         println("$formattedDateTime")
-        kunde.bezahlen(gesamtpreis)
+        angemKunde!!.paypalZahlen(gesamtpreis)
         warenKorb.clear()
 
     }
 
-    fun hauptMenue(Warenhaus: String) {
-        val kunde = Kunde("")
+    fun hauptMenue() {
         println("""
         Was möchten sie tun:
         [1]     Guthaben abfragen
@@ -228,7 +236,7 @@ open class Warenhaus() {
         [3]     Bücher kaufen
         [4]     Elektroartikel kaufen
         [5]     Warenkorb
-        [6]     Bewertung Sie Uns
+        [6]     Bewerten Sie Uns
         [7]     Wie möchten Sie zahlen  
         [8]     LogOut      
     """.trimIndent())
@@ -237,59 +245,60 @@ open class Warenhaus() {
 
         when (input) {
             "1" -> {
-                println("Ihr aktuelles Guthaben beträgt: ${kunde.guthaben}")
-                hauptMenue(Warenhaus)
+                println("Ihr aktuelles Guthaben beträgt: ${angemKunde!!.guthaben}und auf ihrem Paypal Konto sind ${angemKunde!!.paypal}")
+                hauptMenue()
             }
 
             "2" -> {
                 println("Welchen Betrag möchten Sie auf Ihr Einkaufskonto einzahlen: ")
                 var einzahlung = readln().toDouble()
-                kunde.guthaben = einzahlung + kunde.guthaben
-                println("Ihr neues Guthaben beträgt: ${kunde.guthaben}€")
-                hauptMenue(Warenhaus)
+                angemKunde!!.guthaben = einzahlung + angemKunde!!.guthaben
+                println("Ihr neues Guthaben beträgt: ${angemKunde!!.guthaben}€")
+                hauptMenue()
             }
 
             "3" -> {
                 einkaufbuecher()
-                hauptMenue(Warenhaus)
+                hauptMenue()
             }
 
             "4" -> {
                 einkaufelectro()
-                hauptMenue(Warenhaus)
+                hauptMenue()
 
             }
 
             "5" -> {
                 println("In Ihrem Warenkorb befinden sich zur Zeit : $warenKorb")
-                hauptMenue(Warenhaus)
+                hauptMenue()
             }
 
             "6" -> {
                 bewertungAbgeben()
-                hauptMenue(Warenhaus)
+                hauptMenue()
             }
 
             "7" -> {
-                bezahlenAuswahl(Warenhaus)
-                hauptMenue(Warenhaus)
+                bezahlenAuswahl()
+                hauptMenue()
             }
 
             "8" -> {
                 println("Danke für Ihren Besuch, Sie sind erfolgreich abgemeldet ")
-                loginMenu(Warenhaus)
+                angemKunde = null
+                loginMenu()
             }
 
             else -> {
                 println("Ungültige Eingabe")
-                hauptMenue(Warenhaus)
+                hauptMenue()
             }
         }
     }
 
-    fun loginMenu(Warenhaus: String) {
+    fun loginMenu() {
         println("""
-        Herzlich Willkommen im Phantasie Store
+        🏤 Herzlich Willkommen im Phantasie Store 🏤
         Was möchten sie tun?
         [0]     Registrieren
         [1]     Login
@@ -301,22 +310,22 @@ open class Warenhaus() {
 
             "0" -> {
                 println("Danke für Ihre Neuanmeldung ${neuregistrieren()}")
-                hauptMenue(Warenhaus)
+                hauptMenue()
             }
 
             "1" -> {
                 logIn()
-                hauptMenue(Warenhaus)
+                hauptMenue()
             }
 
             "2" -> {
                 adminlogin()
-                adminMenue(Warenhaus)
+                adminMenue()
             }
         }
     }
 
-    fun adminMenue(Warenhaus: String) {
+    fun adminMenue() {
         println("""
         Was möchten sie tun?
         [0]     Bestand abfragen
@@ -330,27 +339,27 @@ open class Warenhaus() {
 
             "0" -> {
                 bestandsabfrage()
-                adminMenue(Warenhaus)
+                adminMenue()
             }
 
             "1" -> {
                 automBestellenbuecher(2, 5)
-                adminMenue(Warenhaus)
+                adminMenue()
             }
 
             "2" -> {
                 automBestellenelectro(2, 5)
-                adminMenue(Warenhaus)
+                adminMenue()
             }
 
             "3" -> {
                 println("Danke für Ihren Besuch, Sie sind erfolgreich abgemeldet ")
-                loginMenu(Warenhaus)
+                loginMenu()
             }
         }
     }
 
-    fun bezahlenAuswahl(Warenhaus: String) {
+    fun bezahlenAuswahl() {
         println("""
         Wie möchten Sie zahlen
         [0]     Mit Einkaufsguthaben

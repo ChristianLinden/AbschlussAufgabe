@@ -1,18 +1,19 @@
+open class Kunde(var name: String, var pin: String) {
+    var paypal: Double = 2500.00
+    var guthaben: Double = 2500.00
 
-open class Kunde (name : String) {
-    var paypal : Double = 2500.00
-    var guthaben : Double = 2500.00
 
     fun bezahlen(betrag: Double) {
-            if (guthaben  >= betrag) {
-                guthaben -= betrag
-                println("Bezahlung erfolgreich. Neues Guthaben: $guthaben")
-            } else {
-                println("Nicht genügend Guthaben. Bezahlung fehlgeschlagen.")
-            }
+        if (guthaben >= betrag) {
+            guthaben -= betrag
+            println("Bezahlung erfolgreich. Neues Guthaben: $guthaben")
+        } else {
+            println("Nicht genügend Guthaben. Bezahlung fehlgeschlagen.")
         }
+    }
+
     fun paypalZahlen(betrag: Double) {
-        if (paypal  >= betrag) {
+        if (paypal >= betrag) {
             paypal -= betrag
             println("Bezahlung erfolgreich. Neues Guthaben: $paypal")
         } else {
@@ -20,7 +21,7 @@ open class Kunde (name : String) {
         }
 
 
-
-    }}
+    }
+}
 
 
