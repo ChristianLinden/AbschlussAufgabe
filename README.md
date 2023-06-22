@@ -27,4 +27,6 @@ Funktionen
 
 -***adminMenue(Warenhaus: String)***: Diese Funktion stellt das Menü für den Administrator dar. Der Administrator kann den Best.
 
+Die Main Datei ist bewusst klein gehalten um den Code besser lesbar zu halten. Es verwundert mich selber ein wenig, das es mir so gut gelungen ist, für mein erstes Projekt :-) . 
+
 
