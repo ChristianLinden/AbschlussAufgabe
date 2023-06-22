@@ -6,6 +6,7 @@ Kunden können sich registrieren, einloggen, Artikel kaufen, Bewertungen abgeben
 Es gibt auch eine Administratorfunktion zum Verwalten des Bestands und zum Nachbestellen von Artikeln.
 
 
-Die Main Datei ist bewusst klein gehalten um den Code besser lesbar zu halten. Es verwundert mich selber ein wenig, das es mir so gut gelungen ist, für mein erstes Projekt :-) . 
+Die Main Datei ist bewusst klein gehalten um den Code besser lesbar zu halten. Es verwundert mich selber ein wenig, 
+das es mir so gut gelungen ist, für mein erstes Projekt  . 😉
 
 
