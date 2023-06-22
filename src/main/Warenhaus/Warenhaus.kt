@@ -286,6 +286,7 @@ open class Warenhaus() {
             "8" -> {
                 println("Danke für Ihren Besuch, Sie sind erfolgreich abgemeldet ")
                 angemKunde = null
+                warenKorb.clear()
                 loginMenu()
             }
 
