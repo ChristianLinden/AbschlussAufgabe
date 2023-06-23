@@ -114,6 +114,7 @@ open class Warenhaus() {
 
     fun einkaufbuecher() {
         buecher.sort()
+        Thread.sleep(5000)
         for ((artikel, preis) in buecher.withIndex()) {
             println("$artikel $preis")//Liste aller Artikel in buecher
         }
@@ -134,10 +135,14 @@ open class Warenhaus() {
         println(" Derzeit befinden sich folgende Artikel in ihrem Warenkorb $warenKorb")
 
 
+
+
+
     }
 
     fun einkaufelectro() {
         elektro.sort()
+        Thread.sleep(2000)
         for ((artikel, preis) in elektro.withIndex()) {
             println("$artikel $preis")//übersicht wird ausgegeben
         }
@@ -285,8 +290,16 @@ open class Warenhaus() {
 
             "8" -> {
                 println("Danke für Ihren Besuch, Sie sind erfolgreich abgemeldet ")
+                println("--------------------------------------------------------")
+                println()
+                println()
+                println("------Der Phantasie Shop sagt Winke Winke---------------")
+                println()
+                println()
+                println("--------------------------------------------------------")
                 angemKunde = null
                 warenKorb.clear()
+                Thread.sleep(5000)
                 loginMenu()
             }
 
